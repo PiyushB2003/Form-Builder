@@ -1,0 +1,131 @@
+import React, { useState } from 'react'
+import { AddPhotoAlternateRoundedIcon, HelpOutlineOutlinedIcon } from '../utils/Icons';
+import Actions from './Actions';
+
+function Categorize() {
+    const [categories, setCategories] = useState(["cat 1", "cat 2"]);
+    const [items, setItems] = useState(["ans 1", "ans 2"]);
+
+    const addCategory = () => setCategories([...categories, ""]);
+    const addItem = () => setItems([...items, ""]);
+
+    const updateCategory = (index, value) => {
+        const updated = [...categories];
+        updated[index] = value;
+        setCategories(updated);
+    };
+
+    const updateItem = (index, value) => {
+        const updated = [...items];
+        updated[index] = value;
+        setItems(updated);
+    };
+
+    const removeCategory = (index) => setCategories(categories.filter((_, i) => i !== index));
+    const removeItem = (index) => setItems(items.filter((_, i) => i !== index));
+    return (
+        <>
+            <div className='flex flex-row my-7'>
+                <div className="border focus-within:border-l-8 focus-within:border-blue-300 rounded-lg w-2/3 shadow-md p-4 bg-white space-y-2">
+                    <div className="flex items-center justify-center w-full">
+                        <span className="text-white font-bold py-2 px-3 rounded-full bg-[#93C4FD] text-center">Categorize</span>
+                    </div>
+                    <div className="flex items-center">
+                        <h2 className="text-xl font-bold">Question 1</h2>
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <div className='w-2/3'>
+                            <input
+                                type="text"
+                                placeholder="Description (Optional)"
+                                className="border rounded-lg px-3 py-2 w-2/3 focus:outline-none focus:ring focus:border-blue-500"
+                            />
+                            <span className=' text-gray-500 mx-3'>
+                                <AddPhotoAlternateRoundedIcon />
+                            </span>
+                        </div>
+                        <div className="flex flex-col">
+                            <input
+                                type="number"
+                                placeholder="Points"
+                                className="border rounded-lg px-2 py-2 w-20 focus:outline-none focus:ring focus:border-blue-500"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Categories Section */}
+                    <div>
+                        <h4 className="font-semibold mb-2">Categories</h4>
+                        {categories.map((category, index) => (
+                            <div key={index} className="flex items-center space-x-2 mb-2">
+                                <input
+                                    type="text"
+                                    value={category}
+                                    onChange={(e) => updateCategory(index, e.target.value)}
+                                    placeholder={`Category ${index + 1}`}
+                                    className="border rounded-lg px-3 py-2 w-40 focus:outline-none focus:ring focus:border-blue-500"
+                                />
+                                <button
+                                    onClick={() => removeCategory(index)}
+                                    className="text-red-500 hover:text-red-700"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                        ))}
+                        <button
+                            onClick={addCategory}
+                            className="text-blue-500 hover:text-blue-700 font-semibold"
+                        >
+                            + Add Category
+                        </button>
+                    </div>
+
+                    {/* Items Section */}
+                    <div>
+                        <div className='flex'>
+                            <h4 className="font-semibold pr-3 w-40 mb-2">Item</h4>
+                            <h4 className="font-semibold pl-10 mb-2">Belongs To</h4>
+                        </div>
+                        {items.map((item, index) => (
+                            <div key={index} className="flex items-center space-x-4 mb-2">
+                                <input
+                                    type="text"
+                                    value={item}
+                                    onChange={(e) => updateItem(index, e.target.value)}
+                                    placeholder={`Item ${index + 1}`}
+                                    className="border rounded-lg px-3 py-2 w-40 focus:outline-none focus:ring focus:border-blue-500"
+                                />
+                                <button
+                                    onClick={() => removeItem(index)}
+                                    className="text-red-500 hover:text-red-700"
+                                >
+                                    ✕
+                                </button>
+                                <select
+                                    className="border rounded-lg px-3 py-2 w-40 focus:outline-none focus:ring focus:border-blue-500"
+                                >
+                                    {categories.map((category, i) => (
+                                        <option key={i} value={category}>
+                                            {category}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        ))}
+                        <button
+                            onClick={addItem}
+                            className="text-blue-500 hover:text-blue-700 font-semibold"
+                        >
+                            + Add Item
+                        </button>
+                    </div>
+                </div>
+                <Actions />
+            </div>
+
+        </>
+    )
+}
+
+export default Categorize
