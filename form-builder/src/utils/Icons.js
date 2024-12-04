@@ -6,5 +6,6 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
-export { NoteAddOutlinedIcon, VisibilityOutlinedIcon, HelpOutlineOutlinedIcon, AddPhotoAlternateRoundedIcon, AddCircleIcon, ContentCopyIcon, DeleteOutlineIcon, AddCircleOutlineIcon }
+export { NoteAddOutlinedIcon, VisibilityOutlinedIcon, HelpOutlineOutlinedIcon, AddPhotoAlternateRoundedIcon, AddCircleIcon, ContentCopyIcon, DeleteOutlineIcon, AddCircleOutlineIcon, DragIndicatorIcon }

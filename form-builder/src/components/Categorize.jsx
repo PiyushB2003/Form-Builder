@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { AddPhotoAlternateRoundedIcon, HelpOutlineOutlinedIcon } from '../utils/Icons';
+import { AddPhotoAlternateRoundedIcon, DragIndicatorIcon, HelpOutlineOutlinedIcon } from '../utils/Icons';
 import Actions from './Actions';
 
 function Categorize() {
@@ -30,7 +30,10 @@ function Categorize() {
                     <div className="flex items-center justify-center w-full">
                         <span className="text-white font-bold py-2 px-3 rounded-full bg-[#93C4FD] text-center">Categorize</span>
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center mb-4">
+                        <span className="text-gray-500 cursor-grab">
+                            <DragIndicatorIcon />
+                        </span>
                         <h2 className="text-xl font-bold">Question 1</h2>
                     </div>
                     <div className="flex items-center justify-between">
@@ -58,6 +61,9 @@ function Categorize() {
                         <h4 className="font-semibold mb-2">Categories</h4>
                         {categories.map((category, index) => (
                             <div key={index} className="flex items-center space-x-2 mb-2">
+                                <span className="text-gray-500 cursor-grab">
+                                    <DragIndicatorIcon className="scale-75" />
+                                </span>
                                 <input
                                     type="text"
                                     value={category}
@@ -67,7 +73,7 @@ function Categorize() {
                                 />
                                 <button
                                     onClick={() => removeCategory(index)}
-                                    className="text-red-500 hover:text-red-700"
+                                    className="text-gray-800 hover:text-black"
                                 >
                                     ✕
                                 </button>
@@ -89,6 +95,9 @@ function Categorize() {
                         </div>
                         {items.map((item, index) => (
                             <div key={index} className="flex items-center space-x-4 mb-2">
+                                <span className="text-gray-500 cursor-grab">
+                                    <DragIndicatorIcon className="scale-75" />
+                                </span>
                                 <input
                                     type="text"
                                     value={item}
@@ -98,7 +107,7 @@ function Categorize() {
                                 />
                                 <button
                                     onClick={() => removeItem(index)}
-                                    className="text-red-500 hover:text-red-700"
+                                    className="text-gray-800 hover:text-black"
                                 >
                                     ✕
                                 </button>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { AddPhotoAlternateRoundedIcon, HelpOutlineOutlinedIcon } from '../utils/Icons';
+import { AddPhotoAlternateRoundedIcon, DragIndicatorIcon, HelpOutlineOutlinedIcon } from '../utils/Icons';
 import Actions from './Actions';
 
 function Cloze() {
@@ -25,7 +25,12 @@ function Cloze() {
                     <div className="flex items-center justify-center w-full">
                         <span className="text-white font-bold py-2 px-3 rounded-full bg-[#93C4FD] text-center">Cloze</span>
                     </div>
-                    <h2 className="text-xl font-bold mb-4">Question 2</h2>
+                    <div className="flex items-center mb-4">
+                        <span className="text-gray-500 cursor-grab">
+                            <DragIndicatorIcon />
+                        </span>
+                        <h2 className="text-xl font-bold">Question 2</h2>
+                    </div>
 
                     <div className="mb-4 flex items-center justify-between w-full">
                         <div className='w-2/3 flex items-center'>
@@ -63,6 +68,9 @@ function Cloze() {
                     <div className="mb-4">
                         {options.map((option, index) => (
                             <div key={index} className="flex items-center mb-2 w-40">
+                                <span className="text-gray-500 cursor-grab">
+                                    <DragIndicatorIcon className="scale-75" />
+                                </span>
                                 <input
                                     type="checkbox"
                                     className="mr-2"
@@ -74,30 +82,8 @@ function Cloze() {
                                     className="flex-grow w-40 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:border-blue-500"
                                     readOnly
                                 />
-                                <button
-                                    className="ml-2 text-red-500 hover:text-red-700"
-                                    onClick={() => handleRemoveOption(index)}
-                                >
-                                    ✕
-                                </button>
                             </div>
                         ))}
-
-                        {/* <div className="flex items-center mt-2">
-                        <input
-                            type="text"
-                            value={newOption}
-                            onChange={(e) => setNewOption(e.target.value)}
-                            className="flex-grow border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Add a new option"
-                        />
-                        <button
-                            className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                            onClick={handleAddOption}
-                        >
-                            Add
-                        </button>
-                    </div> */}
                     </div>
                 </div>
                 <Actions />
