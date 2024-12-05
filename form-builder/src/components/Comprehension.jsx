@@ -5,8 +5,7 @@ import {
     AddPhotoAlternateRoundedIcon,
     ContentCopyIcon,
     DeleteOutlineIcon,
-    DragIndicatorIcon,
-    HelpOutlineOutlinedIcon,
+    DragIndicatorIcon
 } from "../utils/Icons";
 import Actions from "./Actions";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";

@@ -1,10 +1,14 @@
-import React, { useState } from 'react'
-import { AddPhotoAlternateRoundedIcon, DragIndicatorIcon, HelpOutlineOutlinedIcon } from '../utils/Icons';
+import React, { useState, useRef } from 'react'
+import { AddPhotoAlternateRoundedIcon, DragIndicatorIcon } from '../utils/Icons';
 import Actions from './Actions';
 
 function Cloze() {
-    const [options, setOptions] = useState(["brown", "fence"]);
+    const [options, setOptions] = useState([]);
     const [newOption, setNewOption] = useState("");
+    const [showUnderline, setShowUnderline] = useState(false);
+    const [underlinedWords, setUnderlinedWords] = useState([]);
+    const [previewText, setPreviewText] = useState("");
+    const contentRef = useRef(null);
 
     const handleAddOption = () => {
         if (newOption.trim() && !options.includes(newOption)) {
@@ -13,17 +17,80 @@ function Cloze() {
         }
     };
 
-
     const handleRemoveOption = (index) => {
         setOptions(options.filter((_, i) => i !== index));
     };
+
+    const updatePreviewText = (wordsArray = underlinedWords, text) => {
+        const currentText = text || (contentRef.current ? contentRef.current.innerText : "");
+        let updatedText = currentText;
+
+        wordsArray.forEach((word) => {
+            const regex = new RegExp(`\\b${word}\\b`, "g");
+            updatedText = updatedText.replace(regex, "___");
+        });
+
+        setPreviewText(updatedText);
+    };
+
+    const handleContentChange = () => {
+        if (contentRef.current) {
+            const currentText = contentRef.current.innerText;
+            updatePreviewText(underlinedWords, currentText); // Pass the current text to updatePreviewText
+        }
+    };
+
+    const handleTextSelect = () => {
+        const selection = window.getSelection();
+        const selectedText = selection.toString().trim();
+
+        setShowUnderline(!!selectedText);
+    };
+
+
+    const handleApplyUnderline = () => {
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+    
+        if (!selection.toString().trim()) {
+            setShowUnderline(false);
+            return;
+        }
+    
+        const selectedText = selection.toString().trim();
+    
+        if (selectedText && !underlinedWords.includes(selectedText)) {
+            const updatedWords = [...underlinedWords, selectedText];
+            setUnderlinedWords(updatedWords);
+    
+            if (!options.includes(selectedText)) {
+                setOptions([...options, selectedText]);
+            }
+    
+            updatePreviewText(updatedWords);
+    
+            const span = document.createElement("span");
+            span.style.textDecoration = "underline";
+            span.textContent = selectedText;
+    
+            range.deleteContents();
+            range.insertNode(span);
+    
+            selection.removeAllRanges();
+        }
+    
+        setShowUnderline(false);
+    };
+    
+
     return (
         <>
-            <div className='flex flex-row my-7'>
-
+            <div className="flex flex-row my-7">
                 <div className="border focus-within:border-l-8 focus-within:border-blue-300 rounded-lg w-2/3 shadow-md p-4 bg-white space-y-2">
                     <div className="flex items-center justify-center w-full">
-                        <span className="text-white font-bold py-2 px-3 rounded-full bg-[#93C4FD] text-center">Cloze</span>
+                        <span className="text-white font-bold py-2 px-3 rounded-full bg-[#93C4FD] text-center">
+                            Cloze
+                        </span>
                     </div>
                     <div className="flex items-center mb-4">
                         <span className="text-gray-500 cursor-grab">
@@ -32,18 +99,20 @@ function Cloze() {
                         <h2 className="text-xl font-bold">Question 2</h2>
                     </div>
 
+                    {/* Preview Input */}
                     <div className="mb-4 flex items-center justify-between w-full">
-                        <div className='w-2/3 flex items-center'>
-                            <div className='w-2/3'>
+                        <div className="w-2/3 flex items-center">
+                            <div className="w-2/3">
                                 <label className="block text-gray-700 font-medium mb-2">Preview</label>
                                 <input
                                     type="text"
                                     className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:border-blue-500"
-                                    placeholder="A quick ___ fox jumped over a ___"
+                                    value={previewText}
+                                    readOnly
                                     disabled
                                 />
                             </div>
-                            <span className=' text-gray-500 mx-3'>
+                            <span className="text-gray-500 mx-3">
                                 <AddPhotoAlternateRoundedIcon />
                             </span>
                         </div>
@@ -56,15 +125,37 @@ function Cloze() {
                         </div>
                     </div>
 
-                    <div className="mb-4 w-2/3">
-                        <label className="block text-gray-700 font-medium mb-2">Sentence</label>
-                        <input
-                            type="text"
-                            className="w-2/3 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:border-blue-500"
-                            placeholder="A quick brown fox jumped over a fence"
-                        />
+                    {/* Selection Div */}
+                    <div className="mb-4 flex items-center justify-between w-full">
+                        <div className="w-2/3 flex items-center">
+                            <div className="w-2/3">
+                                <label className="block text-gray-700 font-medium mb-2">Selection</label>
+                                <div
+                                    ref={contentRef}
+                                    contentEditable
+                                    suppressContentEditableWarning
+                                    className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:border-blue-500"
+                                    onInput={handleContentChange} 
+                                    onMouseUp={handleTextSelect}
+                                    onKeyUp={handleTextSelect}
+                                    style={{ minHeight: "40px" }}
+                                >
+                                    
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
+                    <div className="relative">
+                        {showUnderline && (
+                            <button
+                                onClick={handleApplyUnderline}
+                                className="absolute left-1/2 bottom-3 text-black font-bold shadow-md border px-2 py-1 rounded-md underline"
+                            >
+                                U
+                            </button>
+                        )}
+                    </div>
                     <div className="mb-4">
                         {options.map((option, index) => (
                             <div key={index} className="flex items-center mb-2 w-40">

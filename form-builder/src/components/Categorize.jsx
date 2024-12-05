@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { AddPhotoAlternateRoundedIcon, DragIndicatorIcon, HelpOutlineOutlinedIcon } from '../utils/Icons';
+import { AddPhotoAlternateRoundedIcon, DragIndicatorIcon } from '../utils/Icons';
 import Actions from './Actions';
 
 function Categorize() {
