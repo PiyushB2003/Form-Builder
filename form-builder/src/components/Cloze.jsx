@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react'
-import { AddPhotoAlternateRoundedIcon, DragIndicatorIcon } from '../utils/Icons';
+import { AddPhotoAlternateRoundedIcon, DeleteOutlineIcon, DragIndicatorIcon } from '../utils/Icons';
 import Actions from './Actions';
 
 function Cloze() {
     const [options, setOptions] = useState([]);
     const [newOption, setNewOption] = useState("");
+    const [image, setImage] = useState(null);
+    const [inputKey, setInputKey] = useState(Date.now());
     const [showUnderline, setShowUnderline] = useState(false);
     const [underlinedWords, setUnderlinedWords] = useState([]);
     const [previewText, setPreviewText] = useState("");
@@ -51,37 +53,55 @@ function Cloze() {
     const handleApplyUnderline = () => {
         const selection = window.getSelection();
         const range = selection.getRangeAt(0);
-    
+
         if (!selection.toString().trim()) {
             setShowUnderline(false);
             return;
         }
-    
+
         const selectedText = selection.toString().trim();
-    
+
         if (selectedText && !underlinedWords.includes(selectedText)) {
             const updatedWords = [...underlinedWords, selectedText];
             setUnderlinedWords(updatedWords);
-    
+
             if (!options.includes(selectedText)) {
                 setOptions([...options, selectedText]);
             }
-    
+
             updatePreviewText(updatedWords);
-    
+
             const span = document.createElement("span");
             span.style.textDecoration = "underline";
             span.textContent = selectedText;
-    
+
             range.deleteContents();
             range.insertNode(span);
-    
+
             selection.removeAllRanges();
         }
-    
+
         setShowUnderline(false);
     };
-    
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    const handleIconClick = () => {
+        document.getElementById('fileInput2').click();
+    };
+
+    const handleCancel = () => {
+        setImage(null);
+        setInputKey(Date.now());
+    };
 
     return (
         <>
@@ -112,8 +132,16 @@ function Cloze() {
                                     disabled
                                 />
                             </div>
-                            <span className="text-gray-500 mx-3">
+                            <span className="text-gray-500 mx-3 cursor-pointer" onClick={handleIconClick}>
                                 <AddPhotoAlternateRoundedIcon />
+                                <input
+                                    id="fileInput2"
+                                    key={inputKey}
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={handleImageChange}
+                                />
                             </span>
                         </div>
                         <div className="flex flex-col">
@@ -124,6 +152,21 @@ function Cloze() {
                             />
                         </div>
                     </div>
+                    {image && (
+                        <div className="w-1/2 my-1 flex items-start">
+                            <img
+                                src={image}
+                                alt="Selected"
+                                className="rounded-lg shadow-md h-20 w-28"
+                            />
+                            <button
+                                onClick={handleCancel}
+                                className=" px-1"
+                            >
+                                <DeleteOutlineIcon />
+                            </button>
+                        </div>
+                    )}
 
                     {/* Selection Div */}
                     <div className="mb-4 flex items-center justify-between w-full">
@@ -135,12 +178,12 @@ function Cloze() {
                                     contentEditable
                                     suppressContentEditableWarning
                                     className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:border-blue-500"
-                                    onInput={handleContentChange} 
+                                    onInput={handleContentChange}
                                     onMouseUp={handleTextSelect}
                                     onKeyUp={handleTextSelect}
                                     style={{ minHeight: "40px" }}
                                 >
-                                    
+
                                 </div>
                             </div>
                         </div>

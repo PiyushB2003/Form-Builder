@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
-import { AddPhotoAlternateRoundedIcon, DragIndicatorIcon } from '../utils/Icons';
+import { AddPhotoAlternateRoundedIcon, DeleteOutlineIcon, DragIndicatorIcon } from '../utils/Icons';
 import Actions from './Actions';
 
 function Categorize() {
     const [categories, setCategories] = useState(["cat 1", "cat 2"]);
     const [items, setItems] = useState(["ans 1", "ans 2"]);
+    const [image, setImage] = useState(null);
+    const [inputKey, setInputKey] = useState(Date.now());
 
     const addCategory = () => setCategories([...categories, ""]);
     const addItem = () => setItems([...items, ""]);
@@ -19,6 +21,24 @@ function Categorize() {
         const updated = [...items];
         updated[index] = value;
         setItems(updated);
+    };
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    const handleIconClick = () => {
+        document.getElementById('fileInput1').click(); // Trigger the hidden input click
+    };
+
+    const handleCancel = () => {
+        setImage(null);
+        setInputKey(Date.now());
     };
 
     const removeCategory = (index) => setCategories(categories.filter((_, i) => i !== index));
@@ -43,8 +63,16 @@ function Categorize() {
                                 placeholder="Description (Optional)"
                                 className="border rounded-lg px-3 py-2 w-2/3 focus:outline-none focus:ring focus:border-blue-500"
                             />
-                            <span className=' text-gray-500 mx-3'>
+                            <span className=' text-gray-500 mx-3 cursor-pointer' onClick={handleIconClick}>
                                 <AddPhotoAlternateRoundedIcon />
+                                <input
+                                    id="fileInput1"
+                                    key={inputKey}
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={handleImageChange}
+                                />
                             </span>
                         </div>
                         <div className="flex flex-col">
@@ -55,6 +83,21 @@ function Categorize() {
                             />
                         </div>
                     </div>
+                    {image && (
+                        <div className="w-1/2 my-1 flex items-start">
+                            <img
+                                src={image}
+                                alt="Selected"
+                                className="rounded-lg shadow-md h-20 w-28"
+                            />
+                            <button
+                                onClick={handleCancel}
+                                className=" px-1"
+                            >
+                                <DeleteOutlineIcon />
+                            </button>
+                        </div>
+                    )}
 
                     {/* Categories Section */}
                     <div>

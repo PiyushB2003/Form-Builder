@@ -12,6 +12,8 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 function Comprehension() {
     const [showQuestionForm, setShowQuestionForm] = useState(false);
+    const [image, setImage] = useState(null);
+    const [inputKey, setInputKey] = useState(Date.now());
     const [mcqData, setMcqData] = useState({
         question: "",
         options: ["", "", "", ""],
@@ -75,6 +77,25 @@ function Comprehension() {
         setMcqData({ ...mcqData, correctOption: index });
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(file); 
+        }
+    };
+    const handleIconClick = () => {
+        document.getElementById('fileInput').click(); // Trigger the hidden input click
+    };
+
+    const handleCancel = () => {
+        setImage(null);
+        setInputKey(Date.now()); 
+    };
+
     return (
         <div className="flex flex-row my-7 space-y-6">
             {/* Question Builder */}
@@ -90,15 +111,28 @@ function Comprehension() {
                 </div>
 
                 <div className="mb-4 flex items-center justify-between w-full">
-                    <div className="w-2/3 flex items-center">
+                    <div className="w-2/3 flex items-start">
                         <div className="w-2/3">
                             <textarea
-                                className="w-full border border-gray-300 rounded-lg px-2 pt-2 focus:outline-none focus:ring focus:border-blue-500"
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:border-blue-500 resize-none overflow-hidden"
                                 placeholder="Type passage here"
+                                rows="1"
+                                onInput={(e) => {
+                                    e.target.style.height = "auto"; // Reset height to auto to calculate new height
+                                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height based on content
+                                }}
                             ></textarea>
                         </div>
-                        <span className="text-gray-500 mx-3">
+                        <span className="text-gray-500 cursor-pointer mx-3" onClick={handleIconClick}>
                             <AddPhotoAlternateRoundedIcon />
+                            <input
+                                id="fileInput"
+                                key={inputKey}
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handleImageChange}
+                            />
                         </span>
                     </div>
                     <div className="flex flex-col">
@@ -109,6 +143,21 @@ function Comprehension() {
                         />
                     </div>
                 </div>
+                {image && (
+                    <div className="w-1/2 my-1 flex items-start">
+                        <img
+                            src={image}
+                            alt="Selected"
+                            className="rounded-lg shadow-md h-20 w-28"
+                        />
+                        <button
+                            onClick={handleCancel}
+                            className=" px-1"
+                        >
+                            <DeleteOutlineIcon />
+                        </button>
+                    </div>
+                )}
                 {questions.length > 0 && (
                     <div className="w-2/3 flex flex-row">
                         <div className="w-full space-y-6">
